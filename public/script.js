@@ -103,6 +103,8 @@ async function dbApi(action, body = {}) {
 }
 
 /* ── SESSION / USER ─────────────────────────────────────── */
+let _dbSessionReady = null; /* promise — resolved once state.userId is set */
+
 function getOrCreateSessionId() {
   let sid = localStorage.getItem('mf_session_id');
   if (!sid) {
@@ -113,17 +115,26 @@ function getOrCreateSessionId() {
 }
 
 async function initDbSession() {
-  try {
-    const sid  = getOrCreateSessionId();
-    const data = await dbApi('ensure_user', { session_id: sid });
-    if (data.user?.id) {
-      state.userId = data.user.id;
-      await syncFavoritesFromDb();
-      await loadMoodHistoryFromDb();
+  _dbSessionReady = (async () => {
+    try {
+      const sid  = getOrCreateSessionId();
+      const data = await dbApi('ensure_user', { session_id: sid });
+      if (data.user?.id) {
+        state.userId = data.user.id;
+        await syncFavoritesFromDb();
+        await loadMoodHistoryFromDb();
+      }
+    } catch (e) {
+      console.warn('DB session init failed (offline?):', e);
     }
-  } catch (e) {
-    console.warn('DB session init failed (offline?):', e);
-  }
+  })();
+  return _dbSessionReady;
+}
+
+/* Waits for the session to be ready, then returns userId (or null on failure) */
+async function getUserId() {
+  if (_dbSessionReady) await _dbSessionReady;
+  return state.userId;
 }
 
 /* ── SYNC FAVORITES FROM DB ─────────────────────────────── */
@@ -300,14 +311,15 @@ async function runMlLab() {
   const moodId = validMoods.includes((mood ?? '').toLowerCase()) ? mood.toLowerCase() : 'happy';
   mlLabLastMood = moodId;
 
-  if (state.userId) {
-    dbApi('log_mood', {
-      user_id:    state.userId,
+  /* log_mood — await session in case user clicked Analyze before initDbSession resolved */
+  getUserId().then(uid => {
+    if (uid) dbApi('log_mood', {
+      user_id:    uid,
       mood:       moodId,
       input_text: text,
       confidence: confidence ?? null,
     }).catch(() => {});
-  }
+  });
 
   pickMood(moodId);
 
@@ -605,9 +617,9 @@ function pickMood(moodId) {
   state.mode         = 'mood';
 
   lstmPushMood(moodId);
-  if (state.userId) {
-    dbApi('log_mood', { user_id: state.userId, mood: moodId }).catch(() => {});
-  }
+  getUserId().then(uid => {
+    if (uid) dbApi('log_mood', { user_id: uid, mood: moodId }).catch(() => {});
+  });
 
   const mood = MOODS.find(m => m.id === moodId);
 
@@ -730,12 +742,14 @@ async function fetchSearchMovies(query, page, append) {
     const data    = await api('tmdb_search', { query, page });
     const results = (data.results || []).filter(m => m.poster_path);
 
-    if (!append && state.userId) {
-      dbApi('log_search', {
-        user_id:      state.userId,
-        query,
-        result_count: results.length,
-      }).catch(() => {});
+    if (!append) {
+      getUserId().then(uid => {
+        if (uid) dbApi('log_search', {
+          user_id:      uid,
+          query,
+          result_count: results.length,
+        }).catch(() => {});
+      });
     }
 
     showLoading(false);
@@ -1060,21 +1074,21 @@ function doToggleFav(movie) {
   if (idx === -1) {
     state.favorites.push(movie);
     showToast(`❤️ "${movie.title}" saved!`, 'success');
-    if (state.userId) {
-      dbApi('add_favorite', {
-        user_id:      state.userId,
+    getUserId().then(uid => {
+      if (uid) dbApi('add_favorite', {
+        user_id:      uid,
         movie_id:     movie.id,
         movie_title:  movie.title,
         poster_path:  movie.poster ? movie.poster.replace('https://image.tmdb.org/t/p/w500', '') : null,
         vote_average: parseFloat(movie.rating) || null,
       }).catch(() => {});
-    }
+    });
   } else {
     state.favorites.splice(idx, 1);
     showToast(`Removed "${movie.title}"`, 'info');
-    if (state.userId) {
-      dbApi('remove_favorite', { user_id: state.userId, movie_id: movie.id }).catch(() => {});
-    }
+    getUserId().then(uid => {
+      if (uid) dbApi('remove_favorite', { user_id: uid, movie_id: movie.id }).catch(() => {});
+    });
   }
   saveFavorites();
 }
