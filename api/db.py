@@ -1,4 +1,5 @@
 from http.server import BaseHTTPRequestHandler
+import datetime
 import json
 import os
 import urllib.parse
@@ -12,8 +13,14 @@ def get_conn():
     return psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
 
 
+def _serial(obj):
+    if isinstance(obj, (datetime.datetime, datetime.date)):
+        return obj.isoformat()
+    raise TypeError(f"Type {type(obj)} not serializable")
+
+
 def ok(handler, data):
-    body = json.dumps(data).encode()
+    body = json.dumps(data, default=_serial).encode()
     handler.send_response(200)
     handler.send_header("Content-Type", "application/json")
     handler.send_header("Access-Control-Allow-Origin", "*")
