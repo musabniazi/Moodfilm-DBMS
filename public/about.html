@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — MoodFilm</title>
+  <meta name="description" content="Learn about MoodFilm, the free AI-powered movie recommendation platform." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav id="navbar" class="scrolled">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo"><span class="logo-icon">🎬</span><span class="logo-text">MoodFilm</span></a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/" class="nav-link">Home</a></li>
+        <li><a href="about.html" class="nav-link active">About</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+        <li><a href="privacy.html" class="nav-link">Privacy</a></li>
+      </ul>
+      <div class="nav-right">
+        <button class="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+  <div class="inner-page">
+    <h1>About <span style="color:var(--accent)">MoodFilm</span></h1>
+    <p class="page-sub">The story behind your AI movie companion</p>
+    <h2>What is MoodFilm?</h2>
+    <p>MoodFilm is a free AI-powered movie recommendation platform that finds the perfect film based on how you feel right now. Pick your mood or describe what you want to watch — our AI delivers instant personalized suggestions with real movie posters, ratings, and details.</p>
+    <h2>How It Works</h2>
+    <p>MoodFilm combines two powerful technologies working together:</p>
+    <ul>
+      <li><strong>Google Gemini AI</strong> — understands your mood and generates personalized movie suggestions with reasoning about why each film fits.</li>
+      <li><strong>TMDb (The Movie Database)</strong> — provides official posters, ratings, release dates, genres, and full movie metadata.</li>
+    </ul>
+    <h2>Features</h2>
+    <ul>
+      <li>🎭 8 mood categories — Happy, Sad, Romantic, Thriller, Sci-Fi, Action, Horror, Animation</li>
+      <li>🔍 Smart AI search — describe anything ("emotional sci-fi", "movies like Interstellar")</li>
+      <li>🎬 Real movie posters and TMDb ratings on every card</li>
+      <li>❤️ Save favorites that persist across sessions</li>
+      <li>🔥 Weekly trending movies section</li>
+      <li>📱 Fully responsive on all devices</li>
+      <li>♾️ Unlimited suggestions — AI never repeats itself</li>
+      <li>💰 100% free — no account, no payment, no limits</li>
+    </ul>
+    <h2>Privacy</h2>
+    <p>MoodFilm does not require an account. Your favorites are stored locally in your browser. We don't collect or store personal data. See our <a href="privacy.html" style="color:var(--accent)">Privacy Policy</a> for full details.</p>
+    <h2>Credits</h2>
+    <p>Movie data and posters provided by <a href="https://www.themoviedb.org" target="_blank" style="color:var(--blue)">The Movie Database (TMDb)</a>. AI powered by <a href="https://ai.google.dev" target="_blank" style="color:var(--blue)">Google Gemini</a>.</p>
+    <p style="font-size:13px;color:var(--text3);margin-top:24px;">This product uses the TMDb API but is not endorsed or certified by TMDb.</p>
+  </div>
+  <footer>
+    <div class="footer-bottom" style="border-top:none;">
+      <p>© 2025 MoodFilm · All rights reserved</p>
+      <p><a href="privacy.html">Privacy Policy</a> · <a href="contact.html">Contact</a></p>
+    </div>
+  </footer>
+  <script>
+    function toggleMobileMenu() { document.getElementById('nav-links').classList.toggle('open'); }
+    window.addEventListener('scroll', () => { document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60); });
+  </script>
+</body>
+</html>

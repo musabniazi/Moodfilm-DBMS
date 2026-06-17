@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — MoodFilm</title>
+  <meta name="description" content="MoodFilm Privacy Policy — how we handle your data." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav id="navbar" class="scrolled">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo"><span class="logo-icon">🎬</span><span class="logo-text">MoodFilm</span></a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/" class="nav-link">Home</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+        <li><a href="privacy.html" class="nav-link active">Privacy</a></li>
+      </ul>
+      <div class="nav-right">
+        <button class="hamburger" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </nav>
+  <div class="inner-page">
+    <h1>Privacy <span style="color:var(--accent)">Policy</span></h1>
+    <p class="page-sub">Last updated: January 2025</p>
+    <p>Welcome to MoodFilm. Your privacy matters. This policy explains how we handle information when you use our website.</p>
+    <h2>1. Information We Collect</h2>
+    <p>MoodFilm does not require registration. We collect minimal information:</p>
+    <ul>
+      <li><strong>Usage Data:</strong> Anonymous analytics through standard hosting services.</li>
+      <li><strong>Search Queries:</strong> Your mood selections and search text are sent to Google Gemini API to generate recommendations. We do not store these on our servers.</li>
+      <li><strong>Favorites:</strong> Movies you save are stored locally in your browser's localStorage and never leave your device.</li>
+    </ul>
+    <h2>2. Third-Party Services</h2>
+    <ul>
+      <li><strong>Google Gemini AI:</strong> Processes your queries. See <a href="https://policies.google.com/privacy" target="_blank" style="color:var(--blue)">Google's Privacy Policy</a>.</li>
+      <li><strong>TMDb:</strong> Provides movie data and images. See <a href="https://www.themoviedb.org/privacy-policy" target="_blank" style="color:var(--blue)">TMDb's Privacy Policy</a>.</li>
+      <li><strong>Google Fonts:</strong> Loads typography. See <a href="https://policies.google.com/privacy" target="_blank" style="color:var(--blue)">Google's Privacy Policy</a>.</li>
+    </ul>
+    <h2>3. Cookies & Local Storage</h2>
+    <p>MoodFilm uses browser localStorage only to save your favorite movies on your device. This data is never transmitted to our servers. Clear it anytime via your browser settings.</p>
+    <h2>4. Advertising</h2>
+    <p>MoodFilm may display Google AdSense advertisements. Google may use cookies to show relevant ads. You can opt out via <a href="https://www.google.com/settings/ads" target="_blank" style="color:var(--blue)">Google's Ad Settings</a>.</p>
+    <h2>5. Children's Privacy</h2>
+    <p>MoodFilm is not directed at children under 13. We do not knowingly collect data from children.</p>
+    <h2>6. Contact</h2>
+    <p>Questions? <a href="contact.html" style="color:var(--accent)">Contact us here</a>.</p>
+  </div>
+  <footer>
+    <div class="footer-bottom" style="border-top:none;">
+      <p>© 2025 MoodFilm · All rights reserved</p>
+    </div>
+  </footer>
+  <script>
+    function toggleMobileMenu() { document.getElementById('nav-links').classList.toggle('open'); }
+    window.addEventListener('scroll', () => { document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60); });
+  </script>
+</body>
+</html>

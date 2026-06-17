@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoodFilm — AI Movie Recommendations Based on Your Mood</title>
+  <meta name="description" content="MoodFilm uses AI to recommend the perfect movie based on how you feel. Get instant personalized movie suggestions for any mood." />
+  <meta name="keywords" content="movie recommendations, mood based movies, AI movie finder, what to watch tonight" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:title" content="MoodFilm — AI Movie Recommendations" />
+  <meta property="og:description" content="Tell us your mood. Our AI finds your perfect film instantly." />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="banner-open">
+
+  <!-- DL BANNER -->
+  <div id="dl-banner">
+    <span class="dl-banner-badge">New</span>
+    ✨ Now Powered by LSTM Deep Learning — Sequence-aware mood prediction
+    <button class="dl-banner-close" onclick="closeDlBanner()" aria-label="Close">×</button>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <span class="logo-icon">🎬</span>
+        <span class="logo-text">MoodFilm</span>
+      </a>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/" class="nav-link active">Home</a></li>
+        <li><a href="#trending" class="nav-link" onclick="scrollTo('trending')">Trending</a></li>
+        <li><a href="#" class="nav-link" onclick="scrollToFavorites()">Favorites</a></li>
+        <li><a href="about.html" class="nav-link">About</a></li>
+        <li><a href="contact.html" class="nav-link">Contact</a></li>
+        <li><a href="#ml-lab" class="nav-link nav-link-ml" onclick="event.preventDefault();scrollToSection('ml-lab')">ML Lab 🧪</a></li>
+      </ul>
+      <div class="nav-right">
+        <button class="fav-btn" onclick="scrollToFavorites()">
+          ❤️ <span id="fav-count">0</span>
+        </button>
+        <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+    <div id="hero-particles"></div>
+    <div class="hero-content">
+      <div class="hero-badge">🧠 Powered by Machine Learning</div>
+      <h1 class="hero-title">
+        Tell Us How You <span class="gradient-text">Feel</span>
+      </h1>
+      <p class="hero-subtitle">
+        Our ML model reads your emotions and finds the perfect movie instantly
+      </p>
+      <button class="ml-analyze-btn hero-cta-btn" onclick="scrollToSection('ml-lab')">
+        <span class="ml-btn-icon">🧠</span>
+        Try the ML Lab
+      </button>
+    </div>
+  </section>
+
+  <!-- ML LAB -->
+  <section id="ml-lab">
+    <div class="section-inner" style="text-align:center;">
+      <h2 class="section-title">🧠 ML Mood <span class="gradient-text">Lab</span></h2>
+      <p class="section-subtitle">Real-time emotion analysis powered by machine learning</p>
+
+      <!-- INPUT PANEL -->
+      <div id="ml-input-wrapper" style="max-width:680px; margin:0 auto;">
+        <textarea
+          id="ml-text-input"
+          class="ml-lab-textarea"
+          placeholder='How are you feeling right now? e.g. "I feel lonely and sad" or "I am excited and pumped"'
+          rows="4"
+          onfocus="this.style.borderColor='var(--accent)'; this.style.boxShadow='0 0 0 3px rgba(191,90,242,0.15)'"
+          onblur="this.style.borderColor=''; this.style.boxShadow=''"
+        ></textarea>
+        <button id="ml-analyze-btn" class="ml-lab-btn" onclick="runMlLab()">
+          🧠 Analyze My Mood &amp; Find Movies
+        </button>
+      </div>
+
+      <!-- LOADING PANEL — Neural Network Animation -->
+      <div id="ml-loading" style="display:none; padding:48px 24px;">
+        <div class="nn-wrap">
+          <svg class="nn-svg" viewBox="0 0 260 120" xmlns="http://www.w3.org/2000/svg">
+            <!-- Input→Hidden lines -->
+            <line class="nn-line active" x1="36" y1="30"  x2="120" y2="18"/>
+            <line class="nn-line active" x1="36" y1="30"  x2="120" y2="50"/>
+            <line class="nn-line active" x1="36" y1="30"  x2="120" y2="82"/>
+            <line class="nn-line active" x1="36" y1="90"  x2="120" y2="18"/>
+            <line class="nn-line active" x1="36" y1="90"  x2="120" y2="50"/>
+            <line class="nn-line active" x1="36" y1="90"  x2="120" y2="82"/>
+            <!-- Hidden→Output lines -->
+            <line class="nn-line active" x1="124" y1="18" x2="220" y2="60"/>
+            <line class="nn-line active" x1="124" y1="50" x2="220" y2="60"/>
+            <line class="nn-line active" x1="124" y1="82" x2="220" y2="60"/>
+            <!-- Extra hidden→hidden skip connections -->
+            <line class="nn-line active" x1="36"  y1="30" x2="220" y2="60"/>
+            <line class="nn-line active" x1="36"  y1="90" x2="120" y2="82"/>
+            <line class="nn-line active" x1="124" y1="18" x2="124" y2="82"/>
+            <!-- Input nodes -->
+            <circle class="nn-node-el" cx="36" cy="30" r="7"/>
+            <circle class="nn-node-el" cx="36" cy="90" r="7"/>
+            <!-- Hidden nodes -->
+            <circle class="nn-node-el" cx="124" cy="18" r="6"/>
+            <circle class="nn-node-el" cx="124" cy="50" r="6"/>
+            <circle class="nn-node-el" cx="124" cy="82" r="6"/>
+            <!-- Output node -->
+            <circle class="nn-node-el out-node" cx="220" cy="60" r="9"/>
+          </svg>
+          <p style="font-size:16px; font-weight:700; color:var(--text); letter-spacing:.3px;">Analyzing your mood…</p>
+          <p style="font-size:12px; color:var(--text3); letter-spacing:.5px;">NLP · Sentiment · Neural Inference</p>
+        </div>
+      </div>
+
+      <!-- RESULT PANEL -->
+      <div id="ml-result-panel" style="display:none; max-width:680px; margin:24px auto 0 auto; background:var(--bg-card); border:1px solid var(--border); border-radius:16px; padding:24px; text-align:left;">
+        <div id="ml-mood-display" style="font-size:20px; font-weight:700; color:var(--text); margin-bottom:12px;"></div>
+        <div style="background:var(--bg); border-radius:8px; height:8px; margin-bottom:16px; overflow:hidden;">
+          <div id="ml-confidence-bar" style="height:100%; background:linear-gradient(90deg,#BF5AF2,#00F5A0); width:0%; transition:width 1s ease; border-radius:8px;"></div>
+        </div>
+        <div id="ml-keywords" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;"></div>
+        <button
+          onclick="resetMlLab()"
+          class="ml-reset-btn"
+        >
+          🔄 Try Another Mood
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MOOD PICKER -->
+  <section id="mood-picker">
+    <div class="section-inner" style="text-align:center;">
+      <h2 class="section-title">Pick Your <span class="gradient-text">Mood</span></h2>
+      <p class="section-subtitle">Or describe it in the ML Lab above — your choice auto-fills the LSTM sequence</p>
+      <div class="mood-picker-grid">
+        <button class="mood-btn" style="--mb-color:rgba(255,107,107,.6);--mc:rgba(255,107,107,.55);" onclick="pickMood('happy')">
+          <span class="mood-btn-emoji">😊</span>
+          <span class="mood-btn-label">Happy</span>
+          <span class="mood-btn-desc">Feel-good &amp; uplifting</span>
+        </button>
+        <button class="mood-btn" style="--mb-color:rgba(99,102,241,.6);--mc:rgba(99,102,241,.55);" onclick="pickMood('sad')">
+          <span class="mood-btn-emoji">😢</span>
+          <span class="mood-btn-label">Sad</span>
+          <span class="mood-btn-desc">Emotional &amp; moving</span>
+        </button>
+        <button class="mood-btn" style="--mb-color:rgba(16,185,129,.6);--mc:rgba(16,185,129,.55);" onclick="pickMood('scifi')">
+          <span class="mood-btn-emoji">⚡</span>
+          <span class="mood-btn-label">Excited</span>
+          <span class="mood-btn-desc">Sci-fi &amp; adventure</span>
+        </button>
+        <button class="mood-btn" style="--mb-color:rgba(239,68,68,.6);--mc:rgba(239,68,68,.55);" onclick="pickMood('thriller')">
+          <span class="mood-btn-emoji">😰</span>
+          <span class="mood-btn-label">Anxious</span>
+          <span class="mood-btn-desc">Thriller &amp; suspense</span>
+        </button>
+        <button class="mood-btn" style="--mb-color:rgba(236,72,153,.6);--mc:rgba(236,72,153,.55);" onclick="pickMood('romantic')">
+          <span class="mood-btn-emoji">💕</span>
+          <span class="mood-btn-label">Romantic</span>
+          <span class="mood-btn-desc">Love &amp; passion</span>
+        </button>
+        <button class="mood-btn" style="--mb-color:rgba(220,38,38,.6);--mc:rgba(220,38,38,.55);" onclick="pickMood('action')">
+          <span class="mood-btn-emoji">😤</span>
+          <span class="mood-btn-label">Angry</span>
+          <span class="mood-btn-desc">Intense &amp; adrenaline</span>
+        </button>
+        <button class="mood-btn" style="--mb-color:rgba(107,114,128,.6);--mc:rgba(107,114,128,.55);" onclick="pickMood('animation')">
+          <span class="mood-btn-emoji">😴</span>
+          <span class="mood-btn-label">Bored</span>
+          <span class="mood-btn-desc">Fun &amp; lighthearted</span>
+        </button>
+        <button class="mood-btn" style="--mb-color:rgba(191,90,242,.6);--mc:rgba(191,90,242,.55);" onclick="pickMood('horror')">
+          <span class="mood-btn-emoji">🎞️</span>
+          <span class="mood-btn-label">Nostalgic</span>
+          <span class="mood-btn-desc">Classics &amp; mystery</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ML MOOD BADGE -->
+  <div id="ml-mood-badge" class="ml-mood-badge" style="display:none;" aria-live="polite"></div>
+
+  <!-- RESULTS SECTION — directly below ML Lab -->
+  <section id="results-section" style="display:none;">
+    <div class="section-inner">
+      <div class="results-header">
+        <div>
+          <h2 class="section-title" id="results-title">Recommendations</h2>
+          <p class="section-subtitle" id="results-subtitle">Curated just for you</p>
+        </div>
+        <div class="results-actions">
+          <button class="btn-ghost" onclick="loadMoreMovies()">+ Load More</button>
+          <button class="btn-ghost" onclick="clearResults()">✕ Clear</button>
+          <button class="btn-primary" onclick="resetMlLab()" style="font-size:13px;padding:8px 20px;">🔄 Try Another Mood</button>
+        </div>
+      </div>
+      <div id="loading-state" style="display:none;">
+        <div class="skeleton-grid">
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+          <div class="skeleton-card"></div>
+        </div>
+      </div>
+      <div id="error-state" style="display:none;">
+        <div class="error-box">
+          <div class="error-icon">⚠️</div>
+          <h3>Something went wrong</h3>
+          <p id="error-message">Could not load recommendations. Please try again.</p>
+          <button class="btn-primary" onclick="retryLastAction()">Try Again</button>
+        </div>
+      </div>
+      <div class="movies-grid" id="movies-grid"></div>
+    </div>
+  </section>
+
+  <!-- SEARCH AGAIN -->
+  <div id="search-again-wrap" style="display:none; text-align:center; padding:24px 0 8px;">
+    <button
+      onclick="resetMlLab()"
+      style="background:#FF6B6B; color:#0D0D0D; font-size:15px; font-weight:700; padding:14px 36px; border:none; border-radius:12px; cursor:pointer; letter-spacing:0.3px;">
+      🔍 Search Again
+    </button>
+  </div>
+
+  <!-- LSTM MOOD PREDICTOR -->
+  <section id="lstm-section">
+    <div class="section-inner" style="text-align:center;">
+
+      <!-- Header -->
+      <div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:8px;">
+        <h2 class="section-title" style="margin:0;">🧠 LSTM Mood <span class="gradient-text">Predictor</span></h2>
+        <span class="lstm-dl-badge">DEEP LEARNING</span>
+      </div>
+      <p class="section-subtitle">Deep Learning Sequence Analysis — predicts your next mood from history</p>
+
+      <!-- Main bento card -->
+      <div class="bento-card lstm-card" id="lstm-card">
+
+        <!-- Mood history pills -->
+        <div class="lstm-history-label">Your recent mood sequence</div>
+        <div id="lstm-history-pills" class="lstm-history-pills">
+          <div class="lstm-pill lstm-pill-empty" id="lstm-pill-0">—</div>
+          <div class="lstm-arrow">→</div>
+          <div class="lstm-pill lstm-pill-empty" id="lstm-pill-1">—</div>
+          <div class="lstm-arrow">→</div>
+          <div class="lstm-pill lstm-pill-empty" id="lstm-pill-2">—</div>
+        </div>
+
+        <p class="lstm-hint" id="lstm-hint">Pick moods above (via mood buttons) — they auto-fill here</p>
+
+        <!-- Predict button -->
+        <button id="lstm-predict-btn" class="lstm-predict-btn" onclick="runLstmPredict()" disabled>
+          <span class="lstm-btn-icon">⚡</span> Predict Next Mood
+        </button>
+
+        <!-- Loading state -->
+        <div id="lstm-loading" style="display:none; padding:24px 0;">
+          <div style="font-size:40px; animation:brainPulse 1s ease-in-out infinite; display:block; margin-bottom:12px;">🧠</div>
+          <p style="color:var(--text2); font-size:14px;">Running LSTM sequence analysis…</p>
+        </div>
+
+        <!-- Result area -->
+        <div id="lstm-result" style="display:none;">
+
+          <!-- Sequence timeline -->
+          <div class="lstm-timeline" id="lstm-timeline"></div>
+
+          <!-- Predicted mood badge -->
+          <div class="lstm-predicted-wrap">
+            <div class="lstm-predicted-label">Predicted next mood</div>
+            <div id="lstm-predicted-badge" class="lstm-predicted-badge"></div>
+          </div>
+
+          <!-- Confidence bar -->
+          <div class="lstm-conf-wrap">
+            <div class="lstm-conf-label">
+              <span>LSTM Confidence</span>
+              <span id="lstm-conf-pct">0%</span>
+            </div>
+            <div class="lstm-conf-track">
+              <div id="lstm-conf-bar" class="lstm-conf-bar" style="width:0%"></div>
+            </div>
+          </div>
+
+          <!-- Step analysis -->
+          <div id="lstm-step-analysis" class="lstm-step-analysis"></div>
+
+          <!-- Reset -->
+          <button class="lstm-reset-btn" onclick="resetLstm()">↺ Clear &amp; Start Over</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS — BENTO -->
+  <section id="how-it-works">
+    <div class="section-inner">
+      <h2 class="section-title">How Our <span class="gradient-text">ML Works</span></h2>
+      <p class="section-subtitle">The tech behind your perfect film match</p>
+      <div class="bento-grid">
+        <div class="bento-card bento-large">
+          <div class="bento-icon">🧠</div>
+          <h3>Sentiment Analysis</h3>
+          <p>NLP processes your text and identifies emotional patterns across 8 mood categories</p>
+          <div class="bento-stat">94% accuracy</div>
+        </div>
+        <div class="bento-card">
+          <div class="bento-icon">🎯</div>
+          <h3>Content-Based Filtering</h3>
+          <p>Cosine similarity matches your mood vector to movie genre vectors for precise recommendations</p>
+        </div>
+        <div class="bento-card">
+          <div class="bento-icon">⚡</div>
+          <h3>Instant Results</h3>
+          <p>ML inference in under 100ms</p>
+        </div>
+        <div class="bento-card">
+          <div class="bento-icon">🔄</div>
+          <h3>K-Means Clustering</h3>
+          <p>Movies grouped into mood clusters</p>
+        </div>
+        <div class="bento-card">
+          <div class="bento-icon">📊</div>
+          <h3>Match Scoring</h3>
+          <p>Every movie gets a 0–100 ML score</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXAMPLES MARQUEE -->
+  <section id="examples-section">
+    <div class="section-inner">
+      <p class="section-subtitle">See what our ML detects</p>
+      <div class="marquee-wrapper">
+        <div class="marquee-track">
+          <div class="marquee-card">"I feel lonely and miss someone" → <span class="mood-tag sad">😢 Sad 94%</span></div>
+          <div class="marquee-card">"So pumped for tonight!" → <span class="mood-tag action">⚔️ Action 89%</span></div>
+          <div class="marquee-card">"In love and floating" → <span class="mood-tag romantic">❤️ Romantic 97%</span></div>
+          <div class="marquee-card">"Bored and lazy Sunday" → <span class="mood-tag happy">😄 Happy 82%</span></div>
+          <div class="marquee-card">"Curious about the universe" → <span class="mood-tag scifi">🤖 Sci-Fi 91%</span></div>
+          <div class="marquee-card">"Scared to sleep alone" → <span class="mood-tag horror">👻 Horror 88%</span></div>
+          <div class="marquee-card">"I feel lonely and miss someone" → <span class="mood-tag sad">😢 Sad 94%</span></div>
+          <div class="marquee-card">"So pumped for tonight!" → <span class="mood-tag action">⚔️ Action 89%</span></div>
+          <div class="marquee-card">"In love and floating" → <span class="mood-tag romantic">❤️ Romantic 97%</span></div>
+          <div class="marquee-card">"Bored and lazy Sunday" → <span class="mood-tag happy">😄 Happy 82%</span></div>
+          <div class="marquee-card">"Curious about the universe" → <span class="mood-tag scifi">🤖 Sci-Fi 91%</span></div>
+          <div class="marquee-card">"Scared to sleep alone" → <span class="mood-tag horror">👻 Horror 88%</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRENDING -->
+  <section id="trending" class="trending-section">
+    <div class="section-inner">
+      <h2 class="section-title">🔥 Trending <span class="accent">Now</span></h2>
+      <p class="section-subtitle">Popular movies this week</p>
+      <div id="trending-loading" class="loading-text">
+        <span class="spinner-sm"></span> Loading trending movies…
+      </div>
+      <div class="movies-grid" id="trending-grid"></div>
+    </div>
+  </section>
+
+  <!-- FAVORITES -->
+  <section id="favorites-section" style="display:none;">
+    <div class="section-inner">
+      <h2 class="section-title">❤️ My <span class="accent">Favorites</span></h2>
+      <p class="section-subtitle">Movies you saved</p>
+      <div class="movies-grid" id="favorites-grid"></div>
+    </div>
+  </section>
+
+  <!-- MODAL -->
+  <div id="modal-overlay" class="modal-overlay" onclick="closeModalOverlay(event)">
+    <div class="modal" id="modal">
+      <button class="modal-close" onclick="closeModalBtn()">✕</button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast"></div>
+
+  <!-- CONFETTI -->
+  <div id="confetti-container"></div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="nav-logo" style="margin-bottom:12px;">
+          <span class="logo-icon">🎬</span>
+          <span class="logo-text">MoodFilm</span>
+        </div>
+        <p class="footer-tagline">ML-powered movie recommendations — your emotions decoded by AI.</p>
+        <div class="footer-ml-badge">
+          <span>⚡ Powered by Machine Learning</span>
+          <span>🧠 NLP · Content Filtering · K-Means</span>
+        </div>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Navigate</h4>
+          <a href="/">Home</a>
+          <a href="about.html">About Us</a>
+          <a href="contact.html">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="privacy.html">Privacy Policy</a>
+        </div>
+        <div class="footer-col">
+          <h4>Powered By</h4>
+          <a href="https://ai.google.dev" target="_blank">Gemini AI</a>
+          <a href="https://themoviedb.org" target="_blank">TMDb API</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 MoodFilm · All rights reserved · Built with ❤️ and AI</p>
+      <p>Movie data by <a href="https://www.themoviedb.org" target="_blank">TMDb</a></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

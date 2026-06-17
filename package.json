@@ -1,0 +1,9 @@
+{
+  "name": "moodfilm",
+  "version": "1.0.0",
+  "description": "AI-Powered Mood Based Movie Recommender",
+  "type": "module",
+  "dependencies": {
+    "docx": "^9.7.1"
+  }
+}
