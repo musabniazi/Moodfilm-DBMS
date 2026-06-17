@@ -311,14 +311,21 @@ async function runMlLab() {
   const moodId = validMoods.includes((mood ?? '').toLowerCase()) ? mood.toLowerCase() : 'happy';
   mlLabLastMood = moodId;
 
-  /* log_mood — await session in case user clicked Analyze before initDbSession resolved */
+  /* log_mood + log_search — await session in case user clicked Analyze before initDbSession resolved */
   getUserId().then(uid => {
-    if (uid) dbApi('log_mood', {
+    if (!uid) return;
+    dbApi('log_mood', {
       user_id:    uid,
       mood:       moodId,
       input_text: text,
       confidence: confidence ?? null,
-    }).catch(() => {});
+    }).catch(e => console.warn('log_mood failed:', e));
+    /* ML Lab is the search entry point on this site — log the query */
+    dbApi('log_search', {
+      user_id:      uid,
+      query:        text,
+      result_count: 0,
+    }).catch(e => console.warn('log_search failed:', e));
   });
 
   pickMood(moodId);
@@ -618,7 +625,8 @@ function pickMood(moodId) {
 
   lstmPushMood(moodId);
   getUserId().then(uid => {
-    if (uid) dbApi('log_mood', { user_id: uid, mood: moodId }).catch(() => {});
+    if (uid) dbApi('log_mood', { user_id: uid, mood: moodId })
+      .catch(e => console.warn('log_mood (pickMood) failed:', e));
   });
 
   const mood = MOODS.find(m => m.id === moodId);
@@ -1075,19 +1083,22 @@ function doToggleFav(movie) {
     state.favorites.push(movie);
     showToast(`❤️ "${movie.title}" saved!`, 'success');
     getUserId().then(uid => {
-      if (uid) dbApi('add_favorite', {
+      if (!uid) return;
+      dbApi('add_favorite', {
         user_id:      uid,
         movie_id:     movie.id,
         movie_title:  movie.title,
         poster_path:  movie.poster ? movie.poster.replace('https://image.tmdb.org/t/p/w500', '') : null,
         vote_average: parseFloat(movie.rating) || null,
-      }).catch(() => {});
+      }).catch(e => console.warn('add_favorite failed:', e));
     });
   } else {
     state.favorites.splice(idx, 1);
     showToast(`Removed "${movie.title}"`, 'info');
     getUserId().then(uid => {
-      if (uid) dbApi('remove_favorite', { user_id: uid, movie_id: movie.id }).catch(() => {});
+      if (!uid) return;
+      dbApi('remove_favorite', { user_id: uid, movie_id: movie.id })
+        .catch(e => console.warn('remove_favorite failed:', e));
     });
   }
   saveFavorites();
